@@ -1,0 +1,82 @@
+﻿@model Multiple_List_Binding.Models.MultipleList
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    <script>
+        var count = 0;
+        $.get("/MultipleList/CompleteDetails", null, DataBind);
+        function DataBind(UserList) {
+           // console.log(UserList);
+            $.template('newData', '<tr class="row_${id}">\
+                 <td><a href="#" class="btn - warning" onclick="ArticleRecord( ${id} )"> <i class="glyphicon glyphicon-expand"></i></a><span>  ${ BookName }</span></td>\
+                </tr>\
+                <tr class="bookname1_${ id }">\
+                </tr>\
+                  <tr class="bookname2_${ id }">\
+                    </tr>');
+            $.tmpl('newData', UserList).appendTo('#SetUsersList');
+        }
+        var arr = [];
+        var list1 = [];
+       
+        function ArticleRecord(UserId) {
+            console.log(UserId);
+            $.get("/MultipleList/CompleteDetailsArticle?id=" + UserId, null, DataBind1);
+            function DataBind1(list) {
+                list1.push(list);
+                console.log(list1);
+                var id = list1[count][0].Article[0].Article_id;
+                count++;
+                if (list.length >= 1) {
+                    $.template("newData3", '<td style="align - content: center;"><a href="#" class="btn - warning" onclick="EmpRecord('+id+',' + UserId +')"> <span class="glyphicon glyphicon-expand" style="margin-left:45px"></span></a> ${ArticleName1}</td>');
+                    $.tmpl("newData3", list).appendTo('.bookname1_' + UserId);
+                }
+            }
+        }
+        function EmpRecord(Id,rowId) {
+            console.log(rowId);
+            $.get("/MultipleList/CompleteDetailsBook?Article_id=" + Id, null, DataBind2);
+            function DataBind2(list) {
+                console.log(list);
+                if (list.length >= 1) {
+                    $.template("newData4", '<td> <span class="glyphicon glyphicon-stop"  style="margin-left:105px"></span> ${Name}</td>');
+                    $.tmpl("newData4", list).appendTo('.bookname2_' + rowId);
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="MyModal">
+        <form id="SubmitForm">
+            <div class="container" style="margin-top:3%">
+                <table class="table table-striped">
+                    <tbody id="SetUsersList">
+
+                        <tr id="LoadingStatus" style="color:red"></tr>
+                        <tr style="margin:10px">
+                            <td style="margin-left:10px"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+
+

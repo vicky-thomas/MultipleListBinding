@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Multiple_List_Binding.Models.MultipleList>
+
+@{
+    ViewBag.Title = "BookDetails";
+}
+
+
+@foreach (var item in Model)
+{
+   
+    @Html.DisplayFor(modelItem => item.BookName);
+    <br/>
+          
+                
+    foreach (var item2 in item.Article)
+    {
+       
+        @Html.DisplayFor(modelItem => item2.ArticleName1);
+        <br/>
+
+        foreach (var item3 in item2.Employee)
+        {
+          
+                    @Html.DisplayFor(modelItem => item3.Name);
+                    <br/>
+        }
+    }
+    <br/>
+
+}
+
